@@ -527,10 +527,10 @@ class ConnectDialog(QFrame):
         self.portBox.setValue(6800)
         
         self.userEdit = QLineEdit(self)
-        self.userEdit.setText("user")
+        self.userEdit.setText("")
         
         self.passEdit = QLineEdit(self)
-        self.passEdit.setText("kissa2")
+        self.passEdit.setText("")
         self.passEdit.setEchoMode(QLineEdit.Password)
         
         
