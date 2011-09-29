@@ -31,6 +31,17 @@ standard location and have gcc in path:
     $ make install PREFIX=/usr
 
 
+Control script
+=================
+The script qmdc-ctrl can be used to control qmdc. qmdc-ctrl used DBus interface
+specified in next section.
+Supported actions:
+  * qmdc-ctrl stop
+  * qmdc-ctrl pause
+  * qmdc-ctrl prev
+  * qmdc-ctrl next
+
+
 DBus interface
 ==============
 qmdc supports controls through a simple DBus interface. Methods take no

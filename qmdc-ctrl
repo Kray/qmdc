@@ -1,0 +1,27 @@
+#!/usr/bin/env python2
+
+import sys
+import dbus
+import dbus.mainloop.glib
+
+usage = "Usage: qmdc-ctrl [next | prev | pause | stop]"
+
+if len(sys.argv) < 2:
+    print usage
+    sys.exit(1)
+
+dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+
+bus = dbus.SessionBus()
+
+qmdc = bus.get_object("org.musicd.qmdc", "/qmdc")
+
+cmd = sys.argv[1]
+if cmd == "next":
+    qmdc.Next()
+elif cmd == "prev":
+    qmdc.Prev()
+elif cmd == "pause":
+    qmdc.Pause()
+elif cmd == "stop":
+    qmdc.Stop()
