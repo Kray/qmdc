@@ -305,6 +305,7 @@ int main(int argc, char *argv[])
   
 #ifndef RUN_IN_PLACE
   char buffer[BUFSIZ], *self, *base, *pypath;
+  int len;
 #endif
   
   Py_SetProgramName(argv[0]);
@@ -317,7 +318,8 @@ int main(int argc, char *argv[])
 #ifdef RUN_IN_PLACE
   pyfile = fopen("qmdc.py", "r");
 #else
-  readlink("/proc/self/exe", buffer, BUFSIZ);
+  len = readlink("/proc/self/exe", buffer, BUFSIZ);
+  buffer[len] = '\0';
   self = strdup(buffer);
   base = dirname(self);
   pypath = calloc(strlen(base) + 9, sizeof(char));
