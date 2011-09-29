@@ -2,8 +2,8 @@ SRCS = qmdc.c
 
 RUN_IN_PLACE ?= 0
 
-CFLAGS += -g -Wall -Wextra $(shell python2-config --cflags)
-LIBS = $(shell python2-config --libs) -lao -lavcodec
+CFLAGS += -g -Wall -Wextra $(shell pkg-config python-2.7 --cflags)
+LIBS = $(shell pkg-config python-2.7 --libs) -lao -lavcodec
 
 PREFIX ?= /usr/local
 

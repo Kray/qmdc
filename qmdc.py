@@ -598,9 +598,9 @@ class QMdc(QMainWindow):
         
     def initUI(self):               
         
-        nextAction = QAction(self)
-        nextAction.setShortcuts(QKeySequence.Open)
-        nextAction.setShortcutContext(Qt.ApplicationShortcut)
+        #nextAction = QAction(self)
+        #nextAction.setShortcuts(QKeySequence.Open)
+        #nextAction.setShortcutContext(Qt.ApplicationShortcut)
         #nextAction.triggered.connect()
         
         exitAction = QAction(QIcon('exit.png'), '&Exit', self)
@@ -614,7 +614,7 @@ class QMdc(QMainWindow):
         fileMenu = menubar.addMenu('&Qmdc')
         fileMenu.addAction(exitAction)
         
-        fileMenu.addAction(nextAction)
+        #fileMenu.addAction(nextAction)
 
         
         self.mainView = MainView(self)
