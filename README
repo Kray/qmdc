@@ -9,7 +9,7 @@ Requirements
 ============
   * C compiler (tested with gcc, tcc won't do because libav* require C99)
   * Python 2.7 or greater (Version 2.x selected instead of 3.x because of
-    lacking dbus support
+    lacking dbus support)
   * libavcodec
   * libao
 
