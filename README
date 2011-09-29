@@ -1,0 +1,51 @@
+qmdc
+======
+Author: Konsta Kokkinen <kray@tsundere.fi>
+
+qmdc is a client for musicd written using PyQt4 and C.
+
+
+Requirements
+============
+  * C compiler (tested with gcc, tcc won't do because libav* require C99)
+  * Python 2.7 or greater (Version 2.x selected instead of 3.x because of
+    lacking dbus support
+  * libavcodec
+  * libao
+
+
+Copyright
+=========
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+
+Compilation
+===========
+A standard GNU Makefile is used. Assuming you have dependencies installed in
+standard location and have gcc in path:
+
+    $ make
+    $ make install PREFIX=/usr
+
+
+DBus interface
+==============
+qmdc supports controls through a simple DBus interface. Methods take no
+arguments.
+Bus name: org.musicd.qmdc
+Object: /qmdc
+Methods: org.musicd.qmdc
+  * Stop
+  * Pause
+  * Prev
+  * Next
+
+
+TODO
+====
+* Split into multiple python files?
+* Cleanup
+* Implement stuff once musicd has implemented server-side features
