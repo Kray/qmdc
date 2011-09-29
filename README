@@ -1,5 +1,5 @@
 qmdc
-======
+====
 Author: Konsta Kokkinen <kray@tsundere.fi>
 
 qmdc is a client for musicd written using PyQt4 and C.
