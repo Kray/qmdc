@@ -12,5 +12,6 @@ qmdc: $(SRCS)
 
 install: qmdc
 	install -d $(PREFIX)/bin/
+	install -m 0755 qmdc $(PREFIX)/bin/
 	install -m 0755 qmdc.py $(PREFIX)/bin/
 	install -m 0755 qmdc-ctrl $(PREFIX)/bin/
