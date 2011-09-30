@@ -64,6 +64,7 @@ void *thread_func(void *data)
   int16_t buffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
   int frame_size;
   int result;
+  int error_counter = 0;
 
   while (thread_run) {
     pthread_mutex_lock(&queue_mutex);
@@ -85,6 +86,16 @@ void *thread_func(void *data)
     result = avcodec_decode_audio3(avctx, buffer, &frame_size, &pkt);
     if (result < 0) {
       printf("avcodec_decode_audio3: %s\n", strerror(AVUNERROR(result)));
+      ++error_counter;
+    } else {
+      error_counter = 0;
+    }
+    
+    /**
+     * @todo FIXME At least some mp3 streams with missing header can't decode
+     * first one or two packets, any better way to handle errors than this? */
+    if (error_counter >= 10) {
+      printf("Unable to decode, audio thread quitting.\n");
       return NULL;
     }
 
