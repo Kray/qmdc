@@ -90,7 +90,7 @@ class Connection(socket.socket):
     def search(self, string):
         with self.mutex:
             self.send(u"search {}\n".format(escape(string)).encode("utf-8"))
-            
+
             result = []
             while 1:
                 msg = self.receive(["track", "search"])
@@ -643,7 +643,6 @@ class QMdc(QMainWindow):
         self.mainView.show()
         
     def search(self, string):
-        print u"Search '{}'".format(string)
         try:
             return self.connection.search(string)
         except MdError as e:
