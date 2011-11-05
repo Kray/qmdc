@@ -2,16 +2,16 @@
 SRCS = src/qmdc.c
 
 PYSRCS= src/head.py \
+	src/connectdialog.py \
 	src/connection.py \
-	src/tracklistview.py \
+	src/dbus.py \
+	src/mainview.py \
 	src/playqueue.py \
+	src/qmdc.py \
 	src/search.py \
 	src/topbar.py \
-	src/mainview.py \
-	src/connectdialog.py \
-	src/dbus.py \
-	src/qmdc.py \
-	src/main.py
+	src/tracklistview.py \
+	src/tail.py
 
 CFLAGS += -g -Wall -Wextra $(shell pkg-config python-2.7 --cflags)
 LIBS = $(shell pkg-config python-2.7 --libs) -lao -lavcodec
