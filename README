@@ -10,7 +10,8 @@ Requirements
   * C compiler (tested with gcc, tcc won't do because libav* require C99)
   * Python 2.7 or greater (Version 2.x selected instead of 3.x because of
     lacking dbus support)
-  * libavcodec
+  * PyQt4
+  * libav (also known as ffmpeg)
   * libao
 
 
@@ -57,6 +58,5 @@ Methods: org.musicd.qmdc
 
 TODO
 ====
-* Split into multiple python files?
 * Cleanup
 * Implement stuff once musicd has implemented server-side features
