@@ -7,6 +7,8 @@ PYSRCS= src/head.py \
 	src/dbus.py \
 	src/mainview.py \
 	src/playqueue.py \
+	src/profileedit.py \
+	src/profileselector.py \
 	src/qmdc.py \
 	src/search.py \
 	src/topbar.py \

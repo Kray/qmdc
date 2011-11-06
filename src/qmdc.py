@@ -1,7 +1,16 @@
+
 class QMdc(QMainWindow):
     
     def __init__(self):
         super(QMdc, self).__init__()
+
+    def init(self):
+        self.settings = QSettings("musicd", "qmdc")
+        
+        if len(self.settings.value("profiles").toStringList()) == 0:
+            self.settings.setValue("profiles", ["Default"])
+        #if !self.settings.contains("qmdc.configured"):
+            
         
         self.session_bus = dbus.SessionBus()
         self.service_name = dbus.service.BusName("org.musicd.qmdc", self.session_bus)
@@ -19,6 +28,12 @@ class QMdc(QMainWindow):
         
         
     def initUI(self):               
+        
+        self.selector = ProfileSelector(self)
+        self.selector.show()
+        
+        self.connect(self.selector, SIGNAL("selected(PyQt_PyObject)"), self.profileSelected)
+        self.connect(self.selector, SIGNAL("canceled()"), qApp.quit)
         
         #nextAction = QAction(self)
         #nextAction.setShortcuts(QKeySequence.Open)
@@ -40,14 +55,17 @@ class QMdc(QMainWindow):
 
         
         self.mainView = MainView(self)
-        self.mainView.hide()
+        self.setCentralWidget(self.mainView)
         
-        self.setCentralWidget(ConnectDialog(self))
+        #self.setCentralWidget(ConnectDialog(self))
         
-        self.setGeometry(300, 300, 300, 200)
+        #self.setGeometry(300, 300, 300, 200)
         self.setWindowTitle('QMdc')
-        self.show()
-        
+        #self.show()
+    def profileSelected(self, profile):
+        self.selector.hide()
+        self.openConnection(profile.host, profile.port, profile.user, profile.password)
+
     def openConnection(self, host, port, user, passw):
         print "Connect to {}:{}.".format(host, port)
         try:
@@ -61,8 +79,7 @@ class QMdc(QMainWindow):
             return
         
         self.statusBar().showMessage("Connected.", 5000)
-        self.setCentralWidget(self.mainView)
-        self.mainView.show()
+        self.show()
         
     def search(self, string):
         try:
