@@ -43,6 +43,7 @@ class ProfileSelector(QDialog):
         self.ctrlBox.addWidget(self.okButton)
         
         self.cancelButton = QPushButton("Cancel")
+        self.connect(self.cancelButton, SIGNAL("clicked()"), self.onCancel)
         self.ctrlBox.addWidget(self.cancelButton)
         
         self.ctrlBox.addStretch(1)
@@ -80,6 +81,9 @@ class ProfileSelector(QDialog):
         self.profileEdit.setProfile(self.selectorBox.currentText())
 
         self.emit(SIGNAL("selected(PyQt_PyObject)"), self.profileEdit.profile())
+        
+    def onCancel(self):
+        self.emit(SIGNAL("canceled()"))
 
     def onNew(self):
         if self.newProfile("New profile"):
