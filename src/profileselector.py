@@ -38,6 +38,7 @@ class ProfileSelector(QDialog):
         self.ctrlBox = QHBoxLayout()
         
         self.okButton = QPushButton("Ok")
+        self.okButton.setDefault(True)
         self.connect(self.okButton, SIGNAL("clicked()"), self.onSelect)
         self.ctrlBox.addWidget(self.okButton)
         

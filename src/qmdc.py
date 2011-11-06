@@ -30,6 +30,7 @@ class QMdc(QMainWindow):
     def initUI(self):               
         
         self.selector = ProfileSelector(self)
+        self.selector.setWindowModality(Qt.WindowModal)
         self.selector.show()
         
         self.connect(self.selector, SIGNAL("selected(PyQt_PyObject)"), self.profileSelected)
@@ -61,10 +62,11 @@ class QMdc(QMainWindow):
         
         #self.setGeometry(300, 300, 300, 200)
         self.setWindowTitle('QMdc')
-        #self.show()
+        self.show()
+
     def profileSelected(self, profile):
-        self.selector.hide()
-        self.openConnection(profile.host, profile.port, profile.user, profile.password)
+        if self.openConnection(profile.host, profile.port, profile.user, profile.password):
+            self.selector.hide()
 
     def openConnection(self, host, port, user, passw):
         print "Connect to {}:{}.".format(host, port)
@@ -73,13 +75,13 @@ class QMdc(QMainWindow):
             self.connection.auth(user, passw)
         except socket.error as e:
             QMessageBox.critical(self, "Error", e.__str__())
-            return
+            return False
         except MdError as e:
             QMessageBox.critical(self, "Error", "Server error: {}".format(e.__str__()))
-            return
+            return False
         
         self.statusBar().showMessage("Connected.", 5000)
-        self.show()
+        return True
         
     def search(self, string):
         try:
