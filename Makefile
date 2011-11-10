@@ -16,7 +16,7 @@ PYSRCS= src/head.py \
 	src/tail.py
 
 CFLAGS += -g -Wall -Wextra $(shell pkg-config python-2.7 --cflags)
-LIBS = $(shell pkg-config python-2.7 --libs) -lao -lavcodec
+LIBS = $(shell pkg-config python-2.7 --libs) -lao -lavutil -lavcodec
 
 RUN_IN_PLACE ?= 0
 
