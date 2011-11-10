@@ -1,9 +1,9 @@
-qmdc
-====
+Qt MusicD Client v0.1.0
+=======================
 Author: Konsta Kokkinen <kray@tsundere.fi>
+Website: http://tsundere.fi/musicd
 
 qmdc is a client for musicd written using PyQt4 and C.
-
 
 Requirements
 ============
