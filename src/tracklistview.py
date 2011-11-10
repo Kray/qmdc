@@ -70,7 +70,7 @@ class TrackListView(QTreeView):
     def trackByRow(self, row):
         track = {}
         track["id"] = self.model.item(row, 0).text()
-        track["number"] = self.model.item(row, 1).text()
+        track["track"] = self.model.item(row, 1).text()
         track["title"] = self.model.item(row, 2).text()
         track["artist"] = self.model.item(row, 3).text()
         track["album"] = self.model.item(row, 4).text()
