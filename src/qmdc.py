@@ -69,7 +69,6 @@ class QMdc(QMainWindow):
             self.selector.hide()
 
     def openConnection(self, host, port, user, passw):
-        print "Connect to {}:{}.".format(host, port)
         try:
             self.connection = Connection(host, port)
             self.connection.auth(user, passw)
@@ -91,14 +90,14 @@ class QMdc(QMainWindow):
             raise
 
     def openTrack(self, trackid):
-        result = self.connection.open(trackid)
-        if not "extradata" in result:
-            result["extradata"] = b""
+        stream, track = self.connection.open(trackid)
+        if not "extradata" in stream:
+            stream["extradata"] = b""
             
-        mdc.open_sink(codec=result["codec"], samplerate=int(result["samplerate"]),
-                      channels=int(result["channels"]),
-                      bitspersample=int(result["bitspersample"]),
-                      extradata=result["extradata"])
+        mdc.open_sink(codec=stream["codec"], samplerate=int(stream["samplerate"]),
+                      channels=int(stream["channels"]),
+                      bitspersample=int(stream["bitspersample"]),
+                      extradata=stream["extradata"])
 
         self.posTimer.start()
         
@@ -109,14 +108,14 @@ class QMdc(QMainWindow):
         self.trackTitle = ""
         self.trackArtist = ""
         self.trackAlbum = ""
-        if "title" in result:
-            self.trackTitle = result["title"]
-        if "artist" in result:
-            self.trackArtist = result["artist"]
-        if "album" in result:
-            self.trackAlbum = result["album"]
-        if "duration" in result:
-            self.trackDuration = int(result.get("duration"))
+        if "title" in track:
+            self.trackTitle = track["title"]
+        if "artist" in track:
+            self.trackArtist = track["artist"]
+        if "album" in track:
+            self.trackAlbum = track["album"]
+        if "duration" in track:
+            self.trackDuration = int(track.get("duration"))
 
         self.emit(SIGNAL("trackOpened()"))
         self.emit(SIGNAL("positionChanged(int)"), 0)

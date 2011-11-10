@@ -46,10 +46,10 @@ class TrackListView(QTreeView):
         line = [QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem("")]
         line[0] = QStandardItem(track.get("id"))
         
-        if "number" in track:
+        if "track" in track:
             try:
-                if int(track["number"]) > 0:
-                    line[1] = QStandardItem("{:02d}".format(int(track["number"])))
+                if int(track["track"]) > 0:
+                    line[1] = QStandardItem("{:02d}".format(int(track["track"])))
                     line[1].setTextAlignment(Qt.AlignRight)
             except ValueError:
                 pass
