@@ -17,6 +17,7 @@ class TrackListView(QTreeView):
         self.model.setHorizontalHeaderItem(3, QStandardItem("Artist"))
         self.model.setHorizontalHeaderItem(4, QStandardItem("Album"))
         self.model.setHorizontalHeaderItem(5, QStandardItem("Length"))
+        self.model.setHorizontalHeaderItem(6, QStandardItem("Path"))
         
         self.setModel(self.model)
         
@@ -43,7 +44,7 @@ class TrackListView(QTreeView):
 
     
     def addTrack(self, track):
-        line = [QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem("")]
+        line = [QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem(""), QStandardItem("")]
         line[0] = QStandardItem(track.get("id"))
         
         if "track" in track:
@@ -61,6 +62,9 @@ class TrackListView(QTreeView):
             line[4] = QStandardItem(track.get("album"))
         if "duration" in track:
             line[5] = QStandardItem(track.get("duration"))
+        if "path" in track:
+            line[6] = QStandardItem(track.get("path").split("/")[-1])
+            line[6].setToolTip(track.get("path"))
             
         for item in line:
             item.setEditable(False)
