@@ -46,6 +46,8 @@ class ProfileSelector(QDialog):
         self.connect(self.cancelButton, SIGNAL("clicked()"), self.onCancel)
         self.ctrlBox.addWidget(self.cancelButton)
         
+        self.connect(self, SIGNAL("rejected()"), self.onCancel)
+        
         self.ctrlBox.addStretch(1)
         
         self.mainLayout.addLayout(self.ctrlBox)
@@ -106,39 +108,3 @@ class ProfileSelector(QDialog):
         self.selectorBox.clear()
         for name in qmdc.settings.value("profiles").toStringList():
             self.selectorBox.addItem(name)
-        
-        
-        """        name, got = QInputDialog.getText(self, "New profile", "Profile name")
-        if got:
-            if qmdc.settings.value("profiles").toStringList().contains(name):
-                QMessageBox.critical(self, "Profile exists", "Profile with this name exists.")
-                self.onNew()
-            self.selectorBox.addItem(name)
-        """            
-
-        """
-        self.listLayout = QHBoxLayout()
-        
-        self.listModel = QStringListModel()
-        self.listView = QListView(self)
-        self.listView.setModel(self.listModel)
-        
-        self.listModel.setStringList(qmdc.settings.value("profiles").toStringList())
-        
-        self.listLayout.addWidget(self.listView)
-        
-        
-        self.listButtonLayout = QVBoxLayout()
-        
-        self.newButton = QPushButton("New profile")
-        self.listButtonLayout.addWidget(self.newButton)
-        
-        self.deleteButton = QPushButton("Delete")
-        self.listButtonLayout.addWidget(self.deleteButton)
-        
-        self.listButtonLayout.addStretch(1)
-        
-        self.listLayout.addLayout(self.listButtonLayout)
-        
-        self.mainLayout.addLayout(self.listLayout)
-        """

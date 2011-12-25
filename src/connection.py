@@ -35,7 +35,13 @@ class Connection(socket.socket):
         
         self.connect((host, port))
 
-        line = self.receive(["musicd"])
+        msg = self.receive(["musicd"])
+        if "codecs" in msg[1]:
+            self.codecs = msg[1]["codecs"].split(",")
+        else:
+            self.codecs = []
+            
+        self.transcoding = {}
     
     def auth(self, user, passw):
         with self.mutex:
@@ -59,7 +65,10 @@ class Connection(socket.socket):
             self.thread.join()
             
         with self.mutex:
-            self.send("open\nid={}\n\n".format(trackid).encode("utf-8"))
+            if self.transcoding.get("codec") in self.codecs:
+                self.send("open\nid={}\ncodec={}\nbitrate={}\n\n".format(trackid, self.transcoding.get("codec"), self.transcoding.get("bitrate")).encode("utf-8"))
+            else:
+                self.send("open\nid={}\n\n".format(trackid).encode("utf-8"))
             
             stream = {}
             track = {}
@@ -157,4 +166,4 @@ class Connection(socket.socket):
             result = self.buffer[:size]
             self.buffer = self.buffer[size:]
             return result
-    
+

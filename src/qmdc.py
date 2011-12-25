@@ -52,6 +52,14 @@ class QMdc(QMainWindow):
         fileMenu = menubar.addMenu('&Qmdc')
         fileMenu.addAction(exitAction)
         
+        
+        transcodingOptionsAction = QAction('&Options', self)
+        transcodingOptionsAction.setStatusTip('Transcoding options')
+        transcodingOptionsAction.triggered.connect(self.showTranscodingOptions)
+        
+        transcodingMenu = menubar.addMenu('&Transcoding')
+        transcodingMenu.addAction(transcodingOptionsAction)
+        
         #fileMenu.addAction(nextAction)
 
         
@@ -68,6 +76,12 @@ class QMdc(QMainWindow):
         if self.openConnection(profile.host, profile.port, profile.user, profile.password):
             self.selector.hide()
 
+    def showTranscodingOptions(self):
+        self.transcodingOptions.show()
+        
+    def transcodingChanged(self, options):
+        self.connection.transcoding = options
+        
     def openConnection(self, host, port, user, passw):
         try:
             self.connection = Connection(host, port)
@@ -80,6 +94,10 @@ class QMdc(QMainWindow):
             return False
         
         self.statusBar().showMessage("Connected.", 5000)
+        
+        self.transcodingOptions = TranscodingOptions(self.connection.codecs, self)
+        self.connect(self.transcodingOptions, SIGNAL("changed(PyQt_PyObject)"), self.transcodingChanged)
+        
         return True
         
     def search(self, string):
