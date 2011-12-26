@@ -111,11 +111,23 @@ class QMdc(QMainWindow):
         stream, track = self.connection.open(trackid)
         if not "extradata" in stream:
             stream["extradata"] = b""
+
+        #Replay gain, if provided
+        gain = 0.0
+        peak = 1.0
+        
+        if "replaytrackgain" in stream:
+            gain = float(stream.get("replaytrackgain"))
+        if "replaytrackpeak" in stream:
+            peak = float(stream.get("replaytrackpeak"))
             
+        if gain != 0.0:
+            gain = min(math.pow(10, gain/20), 1.0 / peak)
+
         mdc.open_sink(codec=stream["codec"], samplerate=int(stream["samplerate"]),
                       channels=int(stream["channels"]),
                       bitspersample=int(stream["bitspersample"]),
-                      extradata=stream["extradata"])
+                      extradata=stream["extradata"], gain=gain)
 
         self.posTimer.start()
         

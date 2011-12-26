@@ -12,6 +12,8 @@
 static AVCodecContext *avctx;
 static ao_device *device;
 
+static double play_gain = 0.0;
+
 
 typedef struct packet {
   uint8_t *data;
@@ -54,6 +56,13 @@ void clear_queue()
   queue_size = 0;
   
   queue_cleared = 1;
+}
+
+static void apply_gain(int16_t *buffer, int frames, double gain)
+{
+  for (; frames > 0; ++buffer, --frames) {
+    *buffer *= gain;
+  }
 }
 
 void *thread_func(void *data)
@@ -102,6 +111,10 @@ void *thread_func(void *data)
     free(packet->data);
     free(packet);
     
+    if (play_gain > 0.0) {
+      apply_gain(buffer, frame_size, play_gain);
+    }
+    
     ao_play(device, (char*)buffer, frame_size);
     /*usleep(frame_size / 2.0 / 44100.0 * 1000000 - 20 * 1000);*/
   }
@@ -114,17 +127,21 @@ mdc_open_sink(PyObject *self, PyObject *args, PyObject *keywds)
 {
   (void)self;
   
+  /* Required */
   char *codec;
   int samplerate;
   int channels;
   int bitspersample;
+  
+  /* Optional */
+  double gain = 0.0;
   PyBytesObject *extradata = NULL;
 
-  static char *kwlist[] = {"codec", "samplerate", "channels", "bitspersample",
+  static char *kwlist[] = {"codec", "samplerate", "channels", "bitspersample", "gain",
                            "extradata", NULL};
 
-  if (!PyArg_ParseTupleAndKeywords(args, keywds, "siii|S", kwlist,
-    &codec, &samplerate, &channels, &bitspersample, &extradata)) {
+  if (!PyArg_ParseTupleAndKeywords(args, keywds, "siii|dS", kwlist,
+    &codec, &samplerate, &channels, &bitspersample, &gain, &extradata)) {
     return NULL;
   }
 
@@ -162,7 +179,9 @@ mdc_open_sink(PyObject *self, PyObject *args, PyObject *keywds)
     printf("ERROR: Could not open decoder.\n");
     return NULL;
   }
-       
+
+  play_gain = gain;
+  
   ao_sample_format format;
   int default_driver;
 
