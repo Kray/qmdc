@@ -10,7 +10,6 @@ class QMdc(QMainWindow):
         if len(self.settings.value("profiles").toStringList()) == 0:
             self.settings.setValue("profiles", ["Default"])
         #if !self.settings.contains("qmdc.configured"):
-            
         
         self.session_bus = dbus.SessionBus()
         self.service_name = dbus.service.BusName("org.musicd.qmdc", self.session_bus)
@@ -26,6 +25,7 @@ class QMdc(QMainWindow):
         self.trackId = 0
         self.trackDuration = 0
         
+        self.playMode = PlayMode.NORMAL
         
     def initUI(self):               
         
@@ -108,6 +108,9 @@ class QMdc(QMainWindow):
             raise
 
     def openTrack(self, trackid):
+        if self.playMode == PlayMode.FULL_RANDOM:
+            self.mainView.playQueue.removeTrack(trackid)
+            
         stream, track = self.connection.open(trackid)
         if not "extradata" in stream:
             stream["extradata"] = b""
@@ -156,6 +159,9 @@ class QMdc(QMainWindow):
         self.trackPosition = position
     
     def togglePause(self):
+        if self.trackid <= 0:
+            self.nextTrack()
+            return
         mdc.toggle_pause()
         if self.posTimer.isActive():
             self.posTimer.stop()
@@ -166,9 +172,20 @@ class QMdc(QMainWindow):
         trackid = self.mainView.playQueue.prevTrack(self.trackId)
         if trackid:
             self.openTrack(trackid)
+
     def nextTrack(self):
-        trackid = self.mainView.playQueue.nextTrack(self.trackId)
-        if trackid:
+        trackid = 0
+        if self.playMode == PlayMode.FULL_RANDOM:
+            trackid = self.mainView.playQueue.popFront()
+            if trackid <= 0:
+                trackid = self.connection.randomid()
+                if trackid <= 0:
+                    QMessageBox.critical(self, "Error", "Server didn't return valid id when requesting random track.")
+        elif self.playMode == PlayMode.QUEUE_RANDOM:
+            trackid = self.mainView.playQueue.random()
+        else:
+            trackid = self.mainView.playQueue.nextTrack(self.trackId)
+        if trackid > 0:
             self.openTrack(trackid)
             
     def stopTrack(self):

@@ -58,7 +58,12 @@ class Connection(socket.socket):
                     break
                 result.append(msg[1])
             return result
-
+            
+    def randomid(self):
+        with self.mutex:
+            self.send(u"randomid\n\n".encode("utf-8"))
+            msg = self.receive(["randomid"])
+            return int(msg[1].get("id"))
     def open(self, trackid):
         if self.running:
             self.running = False
