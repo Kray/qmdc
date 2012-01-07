@@ -159,7 +159,7 @@ class QMdc(QMainWindow):
         self.trackPosition = position
     
     def togglePause(self):
-        if self.trackid <= 0:
+        if self.trackId <= 0:
             self.nextTrack()
             return
         mdc.toggle_pause()
