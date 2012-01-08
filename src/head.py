@@ -11,6 +11,8 @@ import dbus
 import dbus.service
 import dbus.mainloop.qt
 
+import pynotify
+
 import mdc # Our audio sink
 
 

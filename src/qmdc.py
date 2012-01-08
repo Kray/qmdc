@@ -152,6 +152,9 @@ class QMdc(QMainWindow):
 
         self.emit(SIGNAL("trackOpened()"))
         self.emit(SIGNAL("positionChanged(int)"), 0)
+        
+        self.notify = pynotify.Notification("qmdc", u"<b>{}</b><br/>by <b>{}</b><br/>on <b>{}</b>".format(qmdc.trackTitle, qmdc.trackArtist, qmdc.trackAlbum))
+        self.notify.show()
 
     def seek(self, position):
         if self.trackId > 0:
@@ -174,6 +177,7 @@ class QMdc(QMainWindow):
             self.openTrack(trackid)
 
     def nextTrack(self):
+        print "yaa"
         trackid = 0
         if self.playMode == PlayMode.FULL_RANDOM:
             trackid = self.mainView.playQueue.popFront()
@@ -187,6 +191,8 @@ class QMdc(QMainWindow):
             trackid = self.mainView.playQueue.nextTrack(self.trackId)
         if trackid > 0:
             self.openTrack(trackid)
+        else:
+            self.stopTrack()
             
     def stopTrack(self):
         if self.trackId:
@@ -200,11 +206,7 @@ class QMdc(QMainWindow):
         if self.trackPosition > self.trackDuration:
             self.posTimer.stop()
             self.emit(SIGNAL("trackFinished()"))
-            trackid = self.mainView.playQueue.nextTrack(self.trackId)
-            if trackid > 0:
-                self.openTrack(trackid)
-            else:
-                self.stopTrack()
+            self.nextTrack()
         else:
             self.emit(SIGNAL("positionChanged(int)"), self.trackPosition)
 
