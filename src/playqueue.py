@@ -75,7 +75,7 @@ class PlayQueue(QWidget):
     def random(self):
         if self.queue.model.rowCount() == 0:
             return 0
-        return int(self.queue.model.item(random.randint(0, self.queue.model.rowCount()) - 1, 0).text())
+        return int(self.queue.model.item(random.randint(1, self.queue.model.rowCount()) - 1, 0).text())
     
     def onActivated(self, row):
         qmdc.openTrack(int(row["id"]))
