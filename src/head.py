@@ -3,6 +3,7 @@ import random
 import sys
 import socket
 import threading
+import traceback
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
