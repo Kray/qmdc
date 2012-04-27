@@ -10,10 +10,10 @@ class QMdc(QMainWindow):
         if len(self.settings.value("profiles").toStringList()) == 0:
             self.settings.setValue("profiles", ["Default"])
         #if !self.settings.contains("qmdc.configured"):
-        
-        self.session_bus = dbus.SessionBus()
-        self.service_name = dbus.service.BusName("org.musicd.qmdc", self.session_bus)
-        self.dbus_object = DbusObject(self.session_bus, '/qmdc')
+        if not no_dbus:
+            self.session_bus = dbus.SessionBus()
+            self.service_name = dbus.service.BusName("org.musicd.qmdc", self.session_bus)
+            self.dbus_object = DbusObject(self.session_bus, '/qmdc')
 
         self.initUI()
         
@@ -153,9 +153,16 @@ class QMdc(QMainWindow):
         self.emit(SIGNAL("trackOpened()"))
         self.emit(SIGNAL("positionChanged(int)"), 0)
         
-        self.notify = pynotify.Notification("qmdc", u"<b>{}</b><br/>by <b>{}</b><br/>on <b>{}</b>".format(qmdc.trackTitle, qmdc.trackArtist, qmdc.trackAlbum))
-
-        self.notify.show()
+        global no_notify
+        if not no_notify:
+            try:
+                self.notify = pynotify.Notification("qmdc", u"<b>{}</b><br/>by <b>{}</b><br/>on <b>{}</b>".format(qmdc.trackTitle, qmdc.trackArtist, qmdc.trackAlbum))
+                self.notify.show()
+                raise 1
+            except Exception, e:
+                print "notification failed: " + e.__str__()
+                print "notifications disabled"
+                no_notify = True
 
     def seek(self, position):
         if self.trackId > 0:

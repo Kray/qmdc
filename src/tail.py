@@ -6,9 +6,15 @@ def handle_exception(exc_type, exc_value, exc_traceback):
     sys.exit(-1)
 
 sys.excepthook = handle_exception
-pynotify.init("qmdc")
+
+if not no_notify:
+    pynotify.init("qmdc")
+
 app = QApplication(["qmdc"])
-dbus.mainloop.qt.DBusQtMainLoop(set_as_default=True)
+
+if not no_dbus:
+    dbus.mainloop.qt.DBusQtMainLoop(set_as_default=True)
+
 qmdc = QMdc()
 qmdc.init()
 app.exec_()
