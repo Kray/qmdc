@@ -10,7 +10,7 @@
 
 
 static AVCodecContext *avctx;
-static ao_device *device;
+static ao_device *device = NULL;
 
 static double play_gain = 0.0;
 
@@ -193,6 +193,9 @@ mdc_open_sink(PyObject *self, PyObject *args, PyObject *keywds)
   format.rate = avctx->sample_rate;
   format.byte_format = AO_FMT_LITTLE;
 
+  if (device) {
+    ao_close(device);
+  }
   device = ao_open_live(default_driver, &format, NULL);
 
   thread_run = 1;
