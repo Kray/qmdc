@@ -158,7 +158,6 @@ class QMdc(QMainWindow):
             try:
                 self.notify = pynotify.Notification("qmdc", u"<b>{}</b><br/>by <b>{}</b><br/>on <b>{}</b>".format(qmdc.trackTitle, qmdc.trackArtist, qmdc.trackAlbum))
                 self.notify.show()
-                raise 1
             except Exception, e:
                 print "notification failed: " + e.__str__()
                 print "notifications disabled"
