@@ -35,18 +35,26 @@ class Connection(socket.socket):
         
         self.connect((host, port))
 
+        self.send(u"musicd\nprotocol=3\n\n".encode("utf-8"))
         msg = self.receive(["musicd"])
+
         if "codecs" in msg[1]:
             self.codecs = msg[1]["codecs"].split(",")
         else:
             self.codecs = []
-            
+
         self.transcoding = {}
     
     def auth(self, user, passw):
         with self.mutex:
             self.send(u"auth\nuser={}\npassword={}\n\n".format(user, passw).encode("utf-8"))
-            line = self.receive(["auth"])
+            try:
+                line = self.receive(["auth"])
+            except MdError:
+                # Older protocol will give us unauthorized error because of our handshake, retry
+                self.send(u"auth\nuser={}\npassword={}\n\n".format(user, passw).encode("utf-8"))
+                line = self.receive(["auth"])
+
 
     def search(self, string):
         with self.mutex:
