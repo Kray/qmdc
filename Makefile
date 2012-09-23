@@ -11,6 +11,7 @@ PYSRCS= src/head.py \
 	src/qmdc.py \
 	src/search.py \
 	src/topbar.py \
+	src/trackinfo.py \
 	src/tracklistview.py \
 	src/transcodingoptions.py \
 	src/tail.py

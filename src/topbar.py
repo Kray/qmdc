@@ -4,8 +4,6 @@ class TopBar(QWidget):
         
         self.hlayout = QHBoxLayout(self)
         
-        self.nowPlaying = QLabel("<b>Not playing</b>")
-        
         self.positionL = QLabel("0:00")
         self.position = QSlider(Qt.Horizontal, self)
         self.position.setMaximum(100)
@@ -20,8 +18,8 @@ class TopBar(QWidget):
         self.nextB = QPushButton("Next")
         self.nextB.setFlat(True)
         
-        self.hlayout.addWidget(self.nowPlaying, 0, Qt.AlignLeft)
-        self.hlayout.addSpacing(25)
+        #self.hlayout.addWidget(self.nowPlaying, 0, Qt.AlignLeft)
+        #self.hlayout.addSpacing(25)
         self.hlayout.addWidget(self.positionL, 0, Qt.AlignRight)
         self.hlayout.addWidget(self.position, 1)
         self.hlayout.addWidget(self.durationL, 0, Qt.AlignLeft)
@@ -42,7 +40,6 @@ class TopBar(QWidget):
         
         self.connect(qmdc, SIGNAL("trackOpened()"), self.trackChanged)
         self.connect(qmdc, SIGNAL("positionChanged(int)"), self.positionChanged)
-        self.connect(qmdc, SIGNAL("trackFinished()"), self.trackFinished)
     
     def onSliderPressed(self):
         self.sliderMoving = True
@@ -52,11 +49,6 @@ class TopBar(QWidget):
         qmdc.seek(int(self.position.value()))
     
     def trackChanged(self):
-        self.nowPlaying.setText(u"<b>{}</b><br/>by <b>{}</b><br/>on <b>{}</b>"
-            .format(qmdc.trackTitle, qmdc.trackArtist, qmdc.trackAlbum))
-        self.durationL.setText(
-            u"{}:{:02d}".format(int(math.floor(qmdc.trackDuration / 60)),
-                           qmdc.trackDuration % 60))
         self.position.setMaximum(qmdc.trackDuration)
 
     def positionChanged(self, npos):
@@ -65,7 +57,4 @@ class TopBar(QWidget):
         self.positionL.setText(
             u"{}:{:02d}".format(int(math.floor(npos / 60)), npos % 60))
         self.position.setSliderPosition(npos)
-        
-    def trackFinished(self):
-        self.nowPlaying.setText(u"<b>Not playing</b>")
 

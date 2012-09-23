@@ -23,6 +23,13 @@ def parseDict(line):
 
     return result
 
+class Status:
+    def __init__(status):
+        self.status = status
+    OK = 0
+    RETRY = 1
+    UNAVAILABLE = -1
+
 class Connection(socket.socket):
     def __init__(self, host, port):
         socket.socket.__init__(self, socket.AF_INET, socket.SOCK_STREAM)
@@ -42,6 +49,12 @@ class Connection(socket.socket):
             self.codecs = msg[1]["codecs"].split(",")
         else:
             self.codecs = []
+            
+        if "protocol" in msg[1]:
+            self.protocol = msg[1]["protocol"]
+        else:
+            # No protocol information?
+            self.protocol = 0
 
         self.transcoding = {}
     
@@ -72,6 +85,7 @@ class Connection(socket.socket):
             self.send(u"randomid\n\n".encode("utf-8"))
             msg = self.receive(["randomid"])
             return int(msg[1].get("id"))
+
     def open(self, trackid):
         if self.running:
             self.running = False
@@ -112,7 +126,33 @@ class Connection(socket.socket):
             if self.running == False:
                 self.thread = threading.Thread(target=self.process)
                 self.thread.start()
+
+    def albumimg(self, albumid, size):
+        with self.mutex:
+            self.send("albumimg\nalbum={}\nsize={}\n\n".format(albumid, size).encode("utf-8"))
+            msg = self.receive(["albumimg"])
             
+            if not "image" in msg[1]:
+                if msg[1]["status"] == "retry":
+                    return Status.RETRY
+                elif msg[1]["status"] == "unavailable":
+                    return Status.UNAVAILABLE
+            else:
+                return msg[1]["image"]
+
+    def lyrics(self, trackid):
+        with self.mutex:
+            self.send("lyrics\ntrack={}\n\n".format(trackid).encode("utf-8"))
+            msg = self.receive(["lyrics"])
+            
+            if not "lyrics" in msg[1]:
+                if msg[1]["status"] == "retry":
+                    return Status.RETRY
+                elif msg[1]["status"] == "unavailable":
+                    return Status.UNAVAILABLE
+            else:
+                return msg[1]["lyrics"]
+
     
     def process(self):
         self.running = True

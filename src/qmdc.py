@@ -140,11 +140,14 @@ class QMdc(QMainWindow):
         self.trackDuration = 0
         self.trackTitle = ""
         self.trackArtist = ""
+        self.trackAlbumId = ""
         self.trackAlbum = ""
         if "title" in track:
             self.trackTitle = track["title"]
         if "artist" in track:
             self.trackArtist = track["artist"]
+        if "albumid" in track:
+            self.trackAlbumId = track["albumid"]
         if "album" in track:
             self.trackAlbum = track["album"]
         if "duration" in track:
@@ -162,6 +165,32 @@ class QMdc(QMainWindow):
                 print "notification failed: " + e.__str__()
                 print "notifications disabled"
                 no_notify = True
+
+        if self.connection.protocol >= 3:
+            self.getAlbumImg()
+            self.getLyrics()
+            
+    def getAlbumImg(self):
+        image = self.connection.albumimg(self.trackAlbumId, 256)
+        if image == Status.UNAVAILABLE:
+            return
+        elif image == Status.RETRY:
+            QTimer.singleShot(5000, self.getAlbumImg)
+        else:
+            self.trackAlbumImg = image
+            self.emit(SIGNAL("trackAlbumImgLoaded()"))
+            
+    def getLyrics(self):
+        self.emit(SIGNAL("trackLyricsLoading()"))
+        lyrics = self.connection.lyrics(self.trackId)
+        if lyrics == Status.UNAVAILABLE:
+            self.emit(SIGNAL("trackLyricsUnavailable()"))
+            return
+        elif lyrics == Status.RETRY:
+            QTimer.singleShot(5000, self.getLyrics)
+        else:
+            self.trackLyrics = lyrics
+            self.emit(SIGNAL("trackLyricsLoaded()"))
 
     def seek(self, position):
         if self.trackId > 0:
