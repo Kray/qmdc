@@ -50,6 +50,8 @@ class TopBar(QWidget):
     
     def trackChanged(self):
         self.position.setMaximum(qmdc.trackDuration)
+        self.durationL.setText(
+            u"{}:{:02d}".format(int(math.floor(qmdc.trackDuration / 60)), qmdc.trackDuration % 60))
 
     def positionChanged(self, npos):
         if self.sliderMoving:
