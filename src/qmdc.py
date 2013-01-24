@@ -18,12 +18,16 @@ class QMdc(QMainWindow):
         self.initUI()
         
         self.trackPosition = 0
+        self.trackDuration = 0
         self.posTimer = QTimer()
         self.posTimer.setInterval(1000)
         self.connect(self.posTimer, SIGNAL("timeout()"), self.onPositionTimer)
         
         self.trackId = 0
-        self.trackDuration = 0
+        self.trackTitle = ""
+        self.trackArtist = ""
+        self.trackAlbumId = ""
+        self.trackAlbum = ""
         
         self.playMode = PlayMode.NORMAL
         
