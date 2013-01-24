@@ -17,3 +17,7 @@ if not no_dbus:
         def Stop(self):
             qmdc.stopTrack()
 
+        @dbus.service.method("org.musicd.qmdc", in_signature='', out_signature='s')
+        def NowPlaying(self):
+            return qmdc.trackTitle + " by " + qmdc.trackArtist + " on " + qmdc.trackAlbum
+

@@ -25,3 +25,5 @@ elif cmd == "pause":
     qmdc.Pause()
 elif cmd == "stop":
     qmdc.Stop()
+elif cmd == "np":
+    print qmdc.NowPlaying()
