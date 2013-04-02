@@ -180,6 +180,26 @@ mdc_open_sink(PyObject *self, PyObject *args, PyObject *keywds)
     return NULL;
   }
 
+  /*
+   * FIXME: Ugly hack to work around _most_ situations with planar formats
+   * TODO: Implement real resampling
+   */
+  if (av_sample_fmt_is_planar(avctx->sample_fmt)) {
+    printf("NOTICE: Planar sample format offered, trying interleaved\n");
+    enum AVSampleFormat planar_fmt = avctx->sample_fmt;
+    avcodec_close(avctx);
+    avctx->request_sample_fmt = av_get_alt_sample_fmt(planar_fmt, 0);
+
+    if (avcodec_open(avctx, avcodec) < 0) {
+      printf("ERROR: Could not open decoder.\n");
+      return NULL;
+    }
+    if (av_sample_fmt_is_planar(avctx->sample_fmt)) {
+      printf("ERROR: Interleaved format unavailable, audio won't play correctly\n");
+    }
+  }
+
+
   play_gain = gain;
   
   ao_sample_format format;
